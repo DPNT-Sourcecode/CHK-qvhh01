@@ -1,5 +1,5 @@
 
 
-def compute(a, b):
+def sum(a, b):
     ''' Sum of 2 interger '''
     return a+b
