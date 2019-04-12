@@ -1,10 +1,10 @@
 import unittest
-from sum import sumr1
+from solutions.SUM import sum_solution
 
 class TESTSUM(unittest.TestCase):
 
     def test_sum_2_integer(self):
-        self.assertEqual(sumr1(1,1), 2)
+        self.assertEqual(sum_solution.compute(1,1), 2)
 
 
 if __name__ == "__main__":
