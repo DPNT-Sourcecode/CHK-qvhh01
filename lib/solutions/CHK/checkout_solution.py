@@ -40,9 +40,6 @@ class Skus(object):
         result = -1
         total = -1
         for discount in self.discounts:
-            print('Product name:{}'.format(self.product_name))
-            print('total:{}'.format(total))
-            print('result:{}'.format(result))
             if discount.discount_purchase and not(discount.free):
                 if self.number_of_items >= discount.discount_purchase:
                     if (self.number_of_items % discount.discount_purchase) == 0:
