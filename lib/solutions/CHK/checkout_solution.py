@@ -76,8 +76,11 @@ class Basket():
             stock.append(skus)
         
         for skus_name in skus_string:
-            skus_object = list(filter(lambda item : item.product_name == skus_name, stock))[0]
-            self.add_item(skus_object)
+            skus_objects = list(filter(lambda item : item.product_name == skus_name, stock))
+            if len(skus_objects) == 0:
+                return -1
+            else:
+                self.add_item(skus_objects[0])
 
         return self.get_total()
     
@@ -90,4 +93,5 @@ def checkout(skus):
         return basket.checkout(skus)
     else:
         return -1
+
 

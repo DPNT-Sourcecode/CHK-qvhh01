@@ -111,8 +111,12 @@ class TestBasket():
     
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == -1
+        assert checkout_solution.checkout('a') == -1
+    
+    
         
             
+
 
 
 
