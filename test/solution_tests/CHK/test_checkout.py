@@ -6,29 +6,38 @@ class TestSkus():
         assert skus_a.get_product_name() == 'A'
         assert skus_a.get_price() == 10.0
         assert skus_a.get_number_of_items() == 1
-        assert skus_a.get_discount_purchase() == None
-        assert skus_a.get_discount_receive() == None
+        assert len(skus_a.get_discounts()) == 0
     
     def test_skus_should_created_with_discount_info(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         assert skus_a.get_product_name() == 'A'
         assert skus_a.get_price() == 50
         assert skus_a.get_number_of_items() == 1
-        assert skus_a.get_discount_purchase() == 3
-        assert skus_a.get_discount_receive() == 130
+        discounts = skus_a.get_discounts()
+        assert len(discounts) == 1
+        assert discounts[0].get_discount_purchase() == 3
+        assert discounts[0].get_discount_receive() == 130
 
 class TestBasket():
     
     def test_basket_items(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         basket = checkout_solution.Basket()
         assert len(basket.get_items()) == 0
         basket.add_item(skus_a)
         assert len(basket.get_items()) == 1
 
     def test_when_added_the_same_skus_in_basket(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
-        skus_b = checkout_solution.Skus(product_name='B', price=30, discount_purchase=2, discount_receive=45)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        discount1 = checkout_solution.Discount(discount_purchase=2, discount_receive=45)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
+        skus_b = checkout_solution.Skus(product_name='B', price=30)
+        skus_b.add_discount(discount1)
         skus_c = checkout_solution.Skus(product_name='C', price=20)
         basket = checkout_solution.Basket()
         basket.add_item(skus_a)
@@ -53,7 +62,9 @@ class TestBasket():
         assert basket.get_total() == 100
     
     def test_checkout_with_discount_not_applied(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         skus_b = checkout_solution.Skus(product_name='B', price=30)
         skus_c = checkout_solution.Skus(product_name='C', price=20)
         basket = checkout_solution.Basket()
@@ -64,7 +75,9 @@ class TestBasket():
         assert basket.get_total() == 150
 
     def test_checkout_with_discount_applied(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         skus_b = checkout_solution.Skus(product_name='B', price=30)
         skus_c = checkout_solution.Skus(product_name='C', price=20)
         basket = checkout_solution.Basket()
@@ -76,7 +89,9 @@ class TestBasket():
         assert basket.get_total() == 180
     
     def test_checkout_with_discount_applied_but_not_on_all_items(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=3, discount_receive=130)
+        discount = checkout_solution.Discount(discount_purchase=3, discount_receive=130)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         skus_b = checkout_solution.Skus(product_name='B', price=30)
         skus_c = checkout_solution.Skus(product_name='C', price=20)
         basket = checkout_solution.Basket()
@@ -89,7 +104,9 @@ class TestBasket():
         assert basket.get_total() == 230
     
     def test_checkout_with_discount_applied_but_not_on_all_items_(self):
-        skus_a = checkout_solution.Skus(product_name='A', price=50, discount_purchase=2, discount_receive=80)
+        discount = checkout_solution.Discount(discount_purchase=2, discount_receive=80)
+        skus_a = checkout_solution.Skus(product_name='A', price=50)
+        skus_a.add_discount(discount)
         skus_b = checkout_solution.Skus(product_name='B', price=30)
         skus_c = checkout_solution.Skus(product_name='C', price=20)
         basket = checkout_solution.Basket()
@@ -108,7 +125,22 @@ class TestBasket():
     
     def test_checkout_from_string_discount(self):
         assert checkout_solution.checkout('ABCADA') == 195
+
+    def test_checkout_from_string_discount2(self):
+        assert checkout_solution.checkout('ABCADAAAA') == 315
     
+    def test_checkout_from_string_discount3(self):
+        assert checkout_solution.checkout('ABCADAAA') == 265
+    
+    def test_checkout_from_string_discount4(self):
+        assert checkout_solution.checkout('ABCDE') == 155
+    
+    def test_checkout_from_string_discount5(self):
+        assert checkout_solution.checkout('ABCEDE') == 165
+    
+    def test_checkout_from_string_discount6(self):
+        assert checkout_solution.checkout('BBEE') == 95
+
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == 0
         assert checkout_solution.checkout('a') == -1
