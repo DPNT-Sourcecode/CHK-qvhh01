@@ -96,7 +96,9 @@ class Basket():
         for sku in self.items_list:
             for discount in sku.get_discounts():
                 if discount.free and sku.number_of_items >= discount.discount_purchase:
-                    total += [item.price * discount.occurence for item in self.items_list if item.product_name == discount.ref_skus][0]
+                    soldes = list([item.price * discount.occurence for item in self.items_list if item.product_name == discount.ref_skus])
+                    if len(soldes) == 1:
+                        total +=  soldes[0]
 
         return total
 
@@ -139,3 +141,4 @@ def build_stocks():
     stock.append(skus_d)
     stock.append(skus_e)
     return stock
+
