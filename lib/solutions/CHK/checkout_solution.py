@@ -88,10 +88,9 @@ class Basket():
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
-    if len(skus) > 0:
-        basket = Basket()
-        return basket.checkout(skus)
-    else:
-        return -1
+    basket = Basket()
+    return basket.checkout(skus)
+    
+
 
 
