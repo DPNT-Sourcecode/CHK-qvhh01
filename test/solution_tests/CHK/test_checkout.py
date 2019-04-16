@@ -107,10 +107,10 @@ class TestBasket():
         assert basket.checkout('ABCD') == 115
     
     def test_checkout_from_string_discount(self):
-        basket = checkout_solution.Basket()
-        assert basket.checkout('ABCADA') == 195
+        assert checkout_solution.checkout('ABCADA') == 195
         
             
+
 
 
 
