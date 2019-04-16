@@ -1,9 +1,4 @@
 
-
-# noinspection PyUnusedLocal
-# skus = unicode string
-# def checkout(skus):
-#     raise NotImplementedError()
 import json
 class Stock():
     SKUS_JSON = "[{ \"product_name\" : \"A\", \"price\" : 50, \"discount_purchase\" : 3, \"discount_receive\" : 130},\
