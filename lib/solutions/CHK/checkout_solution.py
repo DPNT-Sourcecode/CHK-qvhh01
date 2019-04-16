@@ -1,5 +1,7 @@
 
+
 import json
+
 class Stock():
     SKUS_JSON = "[{ \"product_name\" : \"A\", \"price\" : 50, \"discount_purchase\" : 3, \"discount_receive\" : 130},\
                     { \"product_name\" : \"B\", \"price\" : 30, \"discount_purchase\" : 2, \"discount_receive\" : 45},\
@@ -78,4 +80,10 @@ class Basket():
             self.add_item(skus_object)
 
         return self.get_total()
-        
+    
+
+# noinspection PyUnusedLocal
+# skus = unicode string
+def checkout(skus):
+     basket = Basket()
+     return basket.checkout(skus)
