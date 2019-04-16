@@ -91,6 +91,3 @@ def checkout(skus):
     basket = Basket()
     return basket.checkout(skus)
     
-
-
-
