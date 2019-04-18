@@ -37,22 +37,76 @@ class Skus(object):
         return self.product_name
 
     def get_price(self):
-        result = -1
         total = -1
+        result = -1
         for discount in self.discounts:
             if discount.discount_purchase and not(discount.free):
-                if self.number_of_items >= discount.discount_purchase:
-                    if (self.number_of_items % discount.discount_purchase) == 0:
-                        total = (discount.discount_receive * (self.number_of_items / discount.discount_purchase))
-                    else:
-                        total = (discount.discount_receive * (self.number_of_items // discount.discount_purchase) + ((self.number_of_items % discount.discount_purchase) * self.price))
+                total = self.get_discount(discount)
             if total != -1: 
                 if result == -1 or result > total:
+                    print('ICI1111: {}'.format(total))
                     result = total
+        if len(self.discounts) > 1:
+            res = self.compute_discount()
+            print('compute_discount :res {} result {}'.format(res, result))
+            if result == -1 or result > res:
+                    result = res
         if result != -1:
             return result
         else:
             return self.number_of_items * self.price
+
+    def get_discount(self, discount):
+        total = -1
+        if self.number_of_items >= discount.discount_purchase:
+            if (self.number_of_items % discount.discount_purchase) == 0:
+                total = (discount.discount_receive * (self.number_of_items / discount.discount_purchase))
+            else:
+                total = (discount.discount_receive * (self.number_of_items // discount.discount_purchase) + 
+                ((self.number_of_items % discount.discount_purchase) * self.price))
+
+        return total
+
+    def get_exact_match_discount(self, discount, reste):
+        total = 0
+        rescount = reste
+        if self.number_of_items >= discount.discount_purchase:
+            rescount = reste % discount.discount_purchase 
+            if (rescount) == 0:
+                total = (discount.discount_receive * (reste / discount.discount_purchase))
+            else:
+                total = (discount.discount_receive * (reste // discount.discount_purchase))
+        return total, rescount
+
+    def compute_discount(self):
+        best_discount = self.discounts[1]
+        total1 = 0
+        total2 = 0
+        (total1, reste) = self.get_exact_match_discount(best_discount, self.number_of_items)
+        if reste > 0:
+            best_discount = self.discounts[0]
+            (total2, reste) = self.get_exact_match_discount(best_discount, reste)
+            if reste > 0:
+                total2 += reste * self.price
+        return total1 + total2
+
+    # def get_price(self):
+    #     result = -1
+    #     total = -1
+    #     for discount in self.discounts:
+    #         if discount.discount_purchase and not(discount.free):
+    #             if self.number_of_items >= discount.discount_purchase:
+    #                 if (self.number_of_items % discount.discount_purchase) == 0:
+    #                     total = (discount.discount_receive * (self.number_of_items / discount.discount_purchase))
+    #                 else:
+    #                     total = (discount.discount_receive * (self.number_of_items // discount.discount_purchase) + ((self.number_of_items % discount.discount_purchase) * self.price))
+    #         if total != -1: 
+    #             if result == -1 or result > total:
+    #                 result = total
+    #     if result != -1:
+    #         return result
+    #     else:
+    #         return self.number_of_items * self.price
     
     def get_number_of_items(self):
         return self.number_of_items
@@ -95,11 +149,15 @@ class Basket():
         total = 0
         for sku in self.items_list:
             for discount in sku.get_discounts():
-                if discount.free and sku.number_of_items >= discount.discount_purchase:
-                    soldes = list([item.price * discount.occurence for item in self.items_list if item.product_name == discount.ref_skus])
-                    if len(soldes) == 1:
-                        total +=  soldes[0]
-
+                if discount.free and discount.discount_receive == None:
+                    if sku.number_of_items >= discount.discount_purchase:
+                        res = list([d.discount_receive * (item.number_of_items / d.discount_purchase) for item in self.items_list for d in item.get_discounts() if item.product_name == discount.ref_skus and (item.number_of_items % d.discount_purchase) == 0])
+                        if len(res) == 1:
+                            total += res[0]
+                        else:   
+                            res = list([item.price * discount.occurence for item in self.items_list if item.product_name == discount.ref_skus])
+                            if len(res) == 1:
+                                total += res[0]
         return total
 
     def checkout(self, skus_string):
@@ -111,7 +169,10 @@ class Basket():
                 return -1
             else:
                 self.add_item(skus_objects[0])
-        return self.get_total() - self.get_global_discount()
+        total = self.get_total()
+        total_discount = self.get_global_discount()
+        print('total {} total_discount {}'.format(total, total_discount))
+        return total - total_discount
     
 
 # noinspection PyUnusedLocal
@@ -141,4 +202,3 @@ def build_stocks():
     stock.append(skus_d)
     stock.append(skus_e)
     return stock
-

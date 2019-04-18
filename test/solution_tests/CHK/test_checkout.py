@@ -139,10 +139,17 @@ class TestBasket():
         assert checkout_solution.checkout('ABCEDE') == 165
     
     def test_checkout_from_string_discount6(self):
-        assert checkout_solution.checkout('BBEE') == 95
+        assert checkout_solution.checkout('BBEE') == 80 # to check
     
     def test_checkout_from_string_discount7(self):
         assert checkout_solution.checkout('EE') == 80
+
+    def test_checkout_from_string_discount8(self):
+        assert checkout_solution.checkout('AAAAAAAA') == 330
+    
+    def test_checkout_from_string_discount2(self):
+        assert checkout_solution.checkout('EEEEBB') == 160
+        
 
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == 0
@@ -151,8 +158,6 @@ class TestBasket():
     
         
             
-
-
 
 
 
