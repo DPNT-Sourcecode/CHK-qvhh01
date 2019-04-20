@@ -181,8 +181,8 @@ class Basket():
                     else:
                         free += discount.occurence * (sku.number_of_items // discount.discount_purchase)
         for sku in item_2:
-            for discount in sku.get_discounts():
-                sku.number_of_items -= free
+            sku.number_of_items -= free
+            if sku.number_of_items > 0:
                 total += sku.get_price()
         return total
 

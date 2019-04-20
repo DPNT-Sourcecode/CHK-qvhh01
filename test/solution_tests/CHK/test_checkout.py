@@ -174,7 +174,14 @@ class TestBasket():
     
     def test_checkout_from_string_discount17(self):
         assert checkout_solution.checkout('NNNNNNM') == 240
-        
+    def test_checkout_from_string_discount18(self):
+        assert checkout_solution.checkout('M') == 15
+    
+    def test_checkout_from_string_discount19(self):
+        assert checkout_solution.checkout('ABCDEFGHIJKLMNOPQRSTUVWXYZ') == 965
+    
+    def test_checkout_from_string_discount20(self):
+        assert checkout_solution.checkout('ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ') == 1880
 
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == 0
