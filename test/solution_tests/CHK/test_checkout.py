@@ -159,9 +159,21 @@ class TestBasket():
     
     def test_checkout_from_string_discount12(self):
         assert checkout_solution.checkout('FF') == 20
-        
+    
     def test_checkout_from_string_discount13(self):
         assert checkout_solution.checkout('FFF') == 20
+
+    def test_checkout_from_string_discount14(self):
+        assert checkout_solution.checkout('NNNM') == 120
+    
+    def test_checkout_from_string_discount15(self):
+        assert checkout_solution.checkout('NNN') == 120
+    
+    def test_checkout_from_string_discount16(self):
+        assert checkout_solution.checkout('NNNNNNMM') == 240
+    
+    def test_checkout_from_string_discount17(self):
+        assert checkout_solution.checkout('NNNNNNM') == 240
         
 
     def test_checkout_from_invalid_string(self):

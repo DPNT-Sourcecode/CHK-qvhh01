@@ -153,28 +153,37 @@ class Basket():
         return self.items_list
     
     def get_total(self):
-        item_list = [item for item in self.items_list if item.product_name not in ('E', 'B')]
+        item_list = [item for item in self.items_list if item.product_name not in ('E', 'B', 'N', 'M', 'R', 'Q')]
         return sum(map(lambda item : item.get_price(), item_list))
     
     def get_global_discount(self):
         total = 0
-        free_b = 0
         item_e = [sku for sku in self.items_list if sku.product_name == 'E']
         item_b = [sku for sku in self.items_list if sku.product_name == 'B']
-        for sku in item_e:
+        item_n = [sku for sku in self.items_list if sku.product_name == 'N']
+        item_m = [sku for sku in self.items_list if sku.product_name == 'M']
+        item_r = [sku for sku in self.items_list if sku.product_name == 'R']
+        item_q = [sku for sku in self.items_list if sku.product_name == 'Q']
+        total += self.get_linked_discounts(item_e, item_b)             
+        total += self.get_linked_discounts(item_n, item_m)             
+        total += self.get_linked_discounts(item_r, item_q)             
+        return total
+
+    def get_linked_discounts(self, item_1, item_2):
+        total = 0
+        free = 0
+        for sku in item_1:
             for discount in sku.get_discounts():
-                if sku.product_name == 'E':
-                    total += sku.number_of_items * sku.price
-                    if sku.number_of_items >= discount.discount_purchase:
-                        if (sku.number_of_items % discount.discount_purchase) == 0:
-                            free_b += discount.occurence * (sku.number_of_items / discount.discount_purchase)
-                        else:
-                            free_b += discount.occurence * (sku.number_of_items // discount.discount_purchase)
-        for sku in item_b:
+                total += sku.number_of_items * sku.price
+                if sku.number_of_items >= discount.discount_purchase:
+                    if (sku.number_of_items % discount.discount_purchase) == 0:
+                        free += discount.occurence * (sku.number_of_items / discount.discount_purchase)
+                    else:
+                        free += discount.occurence * (sku.number_of_items // discount.discount_purchase)
+        for sku in item_2:
             for discount in sku.get_discounts():
-                if sku.product_name == 'B':
-                    sku.number_of_items -= free_b
-                    total += sku.get_price()                         
+                sku.number_of_items -= free
+                total += sku.get_price()
         return total
 
     def checkout(self, skus_string):
@@ -205,6 +214,15 @@ def build_stocks():
     discount3 = Discount(discount_purchase=5, discount_receive=200)
     discount4 = Discount(discount_purchase=2, ref_skus="B", free=True, occurence=1)
     discount5 = Discount(discount_purchase=3, discount_receive=20)
+    discount6 = Discount(discount_purchase=5, discount_receive=45)
+    discount7 = Discount(discount_purchase=10, discount_receive=80)
+    discount8 = Discount(discount_purchase=2, discount_receive=150)
+    discount9 = Discount(discount_purchase=3, ref_skus="M", free=True, occurence=1)
+    discount10 = Discount(discount_purchase=3, discount_receive=80)
+    discount11 = Discount(discount_purchase=3, ref_skus="Q", free=True, occurence=1)
+    discount12 = Discount(discount_purchase=4, discount_receive=120)
+    discount13 = Discount(discount_purchase=2, discount_receive=90)
+    discount14 = Discount(discount_purchase=3, discount_receive=130)
     skus_a = Skus(product_name="A", price=50)
     skus_a.add_discount(discount1)
     skus_a.add_discount(discount3)
@@ -218,8 +236,64 @@ def build_stocks():
     skus_e.add_discount(discount4)
     skus_f = Skus(product_name="F", price=10)
     skus_f.add_discount(discount5)
+    skus_g = Skus(product_name='G', price=20)
+    skus_h = Skus(product_name='H', price=10)
+    skus_h.add_discount(discount6)
+    skus_h.add_discount(discount7)
+    skus_i = Skus(product_name='I', price=35)
+    skus_j = Skus(product_name='J', price=60)
+    skus_k = Skus(product_name='K', price=80)
+    skus_k.add_discount(discount8)
+    skus_l = Skus(product_name='L', price=90)
+    skus_m = Skus(product_name='M', price=15)
+    skus_n = Skus(product_name='N', price=40)
+    skus_n.add_discount(discount9)
+    skus_o = Skus(product_name='O', price=10)
+    skus_p = Skus(product_name='P', price=50)
+    skus_p.add_discount(discount3)
+    skus_q = Skus(product_name='Q', price=30)
+    skus_q.add_discount(discount10)
+    skus_r = Skus(product_name='R', price=50)
+    skus_r.add_discount(discount11)
+    skus_s = Skus(product_name='S', price=30)
+    skus_t = Skus(product_name='T', price=20)
+    skus_u = Skus(product_name='U', price=40)
+    skus_u.add_discount(discount12)
+    skus_v = Skus(product_name='V', price=50)
+    skus_v.add_discount(discount13)
+    skus_v.add_discount(discount14)
+    skus_w = Skus(product_name='W', price=20)
+    skus_x = Skus(product_name='X', price=90)
+    skus_y = Skus(product_name='Y', price=10)
+    skus_z = Skus(product_name='Z', price=50)
+
+
+
+
+
+
     stock.append(skus_c)
     stock.append(skus_d)
     stock.append(skus_e)
     stock.append(skus_f)
+    stock.append(skus_g)
+    stock.append(skus_h)
+    stock.append(skus_i)
+    stock.append(skus_j)
+    stock.append(skus_k)
+    stock.append(skus_l)
+    stock.append(skus_m)
+    stock.append(skus_n)
+    stock.append(skus_o)
+    stock.append(skus_p)
+    stock.append(skus_q)
+    stock.append(skus_r)
+    stock.append(skus_s)
+    stock.append(skus_t)
+    stock.append(skus_u)
+    stock.append(skus_v)
+    stock.append(skus_w)
+    stock.append(skus_x)
+    stock.append(skus_y)
+    stock.append(skus_z)
     return stock
