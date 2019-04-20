@@ -121,43 +121,60 @@ class Skus(object):
         self.number_of_items += 1
 
 class Basket():
-
+    
     def __init__(self):
         self.items_list = list()
+        self.e_number = 0
+        self.b_number = 0
 
     def add_item(self, item):
         found = False
         index = 0
+        current_item = item.get_product_name()
         for el in self.items_list:
             index += 1
             if el.get_product_name() == item.get_product_name():
                 found = True
                 break
-
         if found:
             self.items_list[index - 1].increment_number_of_items()
         else:
             self.items_list.append(item)
+        
+        
+        if current_item == 'E':
+            self.e_number += 1
+        elif current_item == 'B':
+            self.b_number += 1
+
+
     
     def get_items(self):
         return self.items_list
     
     def get_total(self):
-        return sum(map(lambda item : item.get_price(), self.items_list))
+        item_list = [item for item in self.items_list if item.product_name not in ('E', 'B')]
+        return sum(map(lambda item : item.get_price(), item_list))
     
     def get_global_discount(self):
         total = 0
-        for sku in self.items_list:
+        free_b = 0
+        item_e = [sku for sku in self.items_list if sku.product_name == 'E']
+        item_b = [sku for sku in self.items_list if sku.product_name == 'B']
+        for sku in item_e:
             for discount in sku.get_discounts():
-                if discount.free and discount.discount_receive == None:
+                if sku.product_name == 'E':
+                    total += sku.number_of_items * sku.price
                     if sku.number_of_items >= discount.discount_purchase:
-                        res = list([d.discount_receive * (item.number_of_items / d.discount_purchase) for item in self.items_list for d in item.get_discounts() if item.product_name == discount.ref_skus and (item.number_of_items % d.discount_purchase) == 0])
-                        if len(res) == 1:
-                            total += res[0]
-                        else:   
-                            res = list([item.price * discount.occurence for item in self.items_list if item.product_name == discount.ref_skus])
-                            if len(res) == 1:
-                                total += res[0]
+                        if (sku.number_of_items % discount.discount_purchase) == 0:
+                            free_b += discount.occurence * (sku.number_of_items / discount.discount_purchase)
+                        else:
+                            free_b += discount.occurence * (sku.number_of_items // discount.discount_purchase)
+        for sku in item_b:
+            for discount in sku.get_discounts():
+                if sku.product_name == 'B':
+                    sku.number_of_items -= free_b
+                    total += sku.get_price()                         
         return total
 
     def checkout(self, skus_string):
@@ -172,7 +189,7 @@ class Basket():
         total = self.get_total()
         total_discount = self.get_global_discount()
         print('total {} total_discount {}'.format(total, total_discount))
-        return total - total_discount
+        return total + total_discount
     
 
 # noinspection PyUnusedLocal
