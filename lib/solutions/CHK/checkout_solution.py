@@ -204,6 +204,7 @@ def build_stocks():
     discount2 = Discount(discount_purchase=2, discount_receive=45)
     discount3 = Discount(discount_purchase=5, discount_receive=200)
     discount4 = Discount(discount_purchase=2, ref_skus="B", free=True, occurence=1)
+    discount5 = Discount(discount_purchase=3, discount_receive=20)
     skus_a = Skus(product_name="A", price=50)
     skus_a.add_discount(discount1)
     skus_a.add_discount(discount3)
@@ -215,7 +216,10 @@ def build_stocks():
     skus_d = Skus(product_name="D", price=15)
     skus_e = Skus(product_name="E", price=40)
     skus_e.add_discount(discount4)
+    skus_f = Skus(product_name="F", price=10)
+    skus_f.add_discount(discount5)
     stock.append(skus_c)
     stock.append(skus_d)
     stock.append(skus_e)
+    stock.append(skus_f)
     return stock
