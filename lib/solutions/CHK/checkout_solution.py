@@ -224,14 +224,21 @@ class Basket():
             if len(items_x) > 0:
                 res, nb_item  = self.get_price_reste(items_x[0], nb_item)
                 total += res
-                print('ICI22222 {} nb_item {}'.format(total, nb_item))
-                if nb_item > 0:
-                    items_sty = [item for item in items if item.product_name in ('S', 'T', 'Y')]
-                    for it in items_sty:
-                        res, nb_item  = self.get_price_reste(items_x[0], nb_item)
-                        total += res
-                        if nb_item <= 0:
-                            break
+            print('ICI22222 {} nb_item {}'.format(total, nb_item))
+            if nb_item > 0:
+                items_sty = [item for item in items if item.product_name in ('S', 'T', 'Y')]
+                for it in items_sty:
+                    res, nb_item  = self.get_price_reste(it, nb_item)
+                    total += res
+                    if nb_item <= 0:
+                        break
+            if nb_item > 0:
+                items_sty = [item for item in items if item.product_name == 'Z']
+                for it in items_sty:
+                    res, nb_item  = self.get_price_reste(it, nb_item)
+                    total += res
+                    if nb_item <= 0:
+                        break
 
         return total
                 

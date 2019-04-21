@@ -203,6 +203,18 @@ class TestBasket():
     
     def test_checkout_from_string_discount27(self):
         assert checkout_solution.checkout('XXXST') == 79
+    
+    def test_checkout_from_string_discount28(self):
+        assert checkout_solution.checkout('S') == 20
+    
+    def test_checkout_from_string_discount29(self):
+        assert checkout_solution.checkout('Z') == 21
+    
+    def test_checkout_from_string_discount30(self):
+        assert checkout_solution.checkout('ZZZ') == 45
+    
+    def test_checkout_from_string_discount31(self):
+        assert checkout_solution.checkout('ZZZX') == 62
 
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == 0
