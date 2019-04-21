@@ -182,6 +182,27 @@ class TestBasket():
     
     def test_checkout_from_string_discount20(self):
         assert checkout_solution.checkout('ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ') == 1880
+    
+    def test_checkout_from_string_discount21(self):
+        assert checkout_solution.checkout('SSS') == 45
+    
+    def test_checkout_from_string_discount22(self):
+        assert checkout_solution.checkout('TTT') == 45
+    
+    def test_checkout_from_string_discount23(self):
+        assert checkout_solution.checkout('ZZZ') == 45
+    
+    def test_checkout_from_string_discount24(self):
+        assert checkout_solution.checkout('STY') == 45
+    
+    def test_checkout_from_string_discount25(self):
+        assert checkout_solution.checkout('STYX') == 62
+    
+    def test_checkout_from_string_discount26(self):
+        assert checkout_solution.checkout('XXXX') == 62
+    
+    def test_checkout_from_string_discount27(self):
+        assert checkout_solution.checkout('XXXST') == 79
 
     def test_checkout_from_invalid_string(self):
         assert checkout_solution.checkout('') == 0

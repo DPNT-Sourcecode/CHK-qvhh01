@@ -1,13 +1,9 @@
 
 
-import json
 
 
-# class Stock():
-#     SKUS_JSON = "[{ \"product_name\" : \"A\", \"price\" : 50, \"discounts\" : [ {\"discount_purchase\" : 3, \"discount_receive\" : 130}]},\
-#                     { \"product_name\" : \"B\", \"price\" : 30, \"discounts\" : [ {\"discount_purchase\" : 2, \"discount_receive\" : 45}]},\
-#                     { \"product_name\" : \"C\", \"price\" : 20}, \
-#                     { \"product_name\" : \"D\", \"price\" : 15}]"
+
+GLOBAL_DISCOUNT_PRODUCT = ('E', 'B', 'N', 'M', 'R', 'Q', 'S','T','X','Y','Z')
     
 class Discount(object):
     def __init__(self, discount_purchase=None, discount_receive=None, ref_skus="", occurence=0, free=False):
@@ -153,7 +149,7 @@ class Basket():
         return self.items_list
     
     def get_total(self):
-        item_list = [item for item in self.items_list if item.product_name not in ('E', 'B', 'N', 'M', 'R', 'Q')]
+        item_list = [item for item in self.items_list if item.product_name not in GLOBAL_DISCOUNT_PRODUCT]
         return sum(map(lambda item : item.get_price(), item_list))
     
     def get_global_discount(self):
@@ -197,10 +193,48 @@ class Basket():
                 self.add_item(skus_objects[0])
         total = self.get_total()
         total_discount = self.get_global_discount()
-        print('total {} total_discount {}'.format(total, total_discount))
-        return total + total_discount
+        group_discount = self.group_discount()
+        print('total {} total_discount {} group_discount {}'.format(total, total_discount, group_discount))
+        return total + total_discount + group_discount
     
+    def get_price_reste(self, item, nb_item):
+        if nb_item >= item.number_of_items:
+            total = item.get_price()
+            nb_item -= item.number_of_items
+            print('ICI333333 {} nb_item {}'.format(total, nb_item))
+        else:
+            item.number_of_items = nb_item
+            total = item.get_price()
+            nb_item = 0
+        return total, nb_item
 
+    def group_discount(self):
+        items = [item for item in self.items_list if item.product_name in ('S','T','X','Y','Z')]
+        nb_item = 0
+        total = 0
+        curent_items = []
+        for item in items:
+            nb_item += item.number_of_items
+            if nb_item >= 3:
+                total += 45
+                nb_item -= 3
+        print('ICI111111 {} nb_item {}'.format(total, nb_item))
+        if nb_item > 0:
+            items_x = [item for item in items if item.product_name == 'X']
+            if len(items_x) > 0:
+                res, nb_item  = self.get_price_reste(items_x[0], nb_item)
+                total += res
+                print('ICI22222 {} nb_item {}'.format(total, nb_item))
+                if nb_item > 0:
+                    items_sty = [item for item in items if item.product_name in ('S', 'T', 'Y')]
+                    for it in items_sty:
+                        res, nb_item  = self.get_price_reste(items_x[0], nb_item)
+                        total += res
+                        if nb_item <= 0:
+                            break
+
+        return total
+                
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
@@ -223,6 +257,7 @@ def build_stocks():
     discount12 = Discount(discount_purchase=4, discount_receive=120)
     discount13 = Discount(discount_purchase=2, discount_receive=90)
     discount14 = Discount(discount_purchase=3, discount_receive=130)
+    discount15 = Discount(discount_purchase=3, discount_receive=45)
     skus_a = Skus(product_name="A", price=50)
     skus_a.add_discount(discount1)
     skus_a.add_discount(discount3)
@@ -242,7 +277,7 @@ def build_stocks():
     skus_h.add_discount(discount7)
     skus_i = Skus(product_name='I', price=35)
     skus_j = Skus(product_name='J', price=60)
-    skus_k = Skus(product_name='K', price=80)
+    skus_k = Skus(product_name='K', price=70)
     skus_k.add_discount(discount8)
     skus_l = Skus(product_name='L', price=90)
     skus_m = Skus(product_name='M', price=15)
@@ -255,23 +290,22 @@ def build_stocks():
     skus_q.add_discount(discount10)
     skus_r = Skus(product_name='R', price=50)
     skus_r.add_discount(discount11)
-    skus_s = Skus(product_name='S', price=30)
+    skus_s = Skus(product_name='S', price=20)
+    skus_s.add_discount(discount15)
     skus_t = Skus(product_name='T', price=20)
+    skus_t.add_discount(discount15)
     skus_u = Skus(product_name='U', price=40)
     skus_u.add_discount(discount12)
     skus_v = Skus(product_name='V', price=50)
     skus_v.add_discount(discount13)
     skus_v.add_discount(discount14)
     skus_w = Skus(product_name='W', price=20)
-    skus_x = Skus(product_name='X', price=90)
-    skus_y = Skus(product_name='Y', price=10)
-    skus_z = Skus(product_name='Z', price=50)
-
-
-
-
-
-
+    skus_x = Skus(product_name='X', price=17)
+    skus_x.add_discount(discount15)
+    skus_y = Skus(product_name='Y', price=20)
+    skus_y.add_discount(discount15)
+    skus_z = Skus(product_name='Z', price=21)
+    skus_z.add_discount(discount15)
     stock.append(skus_c)
     stock.append(skus_d)
     stock.append(skus_e)
